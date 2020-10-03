@@ -32,7 +32,7 @@ function createMap(earthquakes) {
   }).addTo(map);
 }
 
-createMap();
+// createMap();
 
   // Create a legend to display map information
 
@@ -40,26 +40,36 @@ createMap();
   // info.addTo(map);
 
 
-
 // Write function to create markers
+function createMarkers(response) {
 
-  // Select the magnitude property from response.data ("properties" > "mag")
+  // Select the features property from response
+  var features = response.features;
   
-  // Select the depth property from response.data ("geometry" > "coordinates" > [2])
-  
+  console.log(features)
+
   // Initialise an array to hold the magnitude and depth markers
-
-//   var earthquakeMarkers = [];
-
+  var earthquakeMarkers = [];
 
   // Loop through the features array
+  for (var index = 0; index < features.length; index++) {
+    var feature = features[index];  
+    var magnitude = feature.properties.mag;
+    var depth = feature.geometry.coordinates[2];
+    var place = feature.properties.place;
 
-        // For each earthquake, create a marker and bind a popup with additional information (e.g. "properties" > "place", "mag", "depth")
-        
-        // Add the marker to the earthquakeMarkers array
+    // For each earthquake, create a marker and bind a popup with additional information (e.g. "properties" > "place", "mag", "depth")
+    var earthquakeMarker = L.marker([magnitude, depth, place])
+    .bindPopup("<h3>" + place + "<h3><h3>Magnitude: " + magnitude + "</h3>");
+  
+    // Add the marker to the earthquakeMarkers array
+    earthquakeMarkers.push(earthquakeMarker);
+  }
 
   // Create a layer group made from the earthquakeMarkers array, pass it into the createMap function
-  
+  createMap(L.layerGroup(earthquakeMarkers));
+}
 
 
 // Perform API call to retrieve USGS earthquake data. Call createMarkers when complete.
+d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson", createMarkers);
