@@ -21,50 +21,56 @@ function createMap(earthquakes) {
 
   // Create the map object  
   var map = L.map("mapid", {
-    center: [40.73, -74.0059],
-    zoom: 12,
+    center: [32.715736, -117.161087],
+    zoom: 4,
     layers: [lightmap, earthquakes]
   });
 
-  // Create a layer control, pass in the baseMaps and overlayMaps. Add the layer control to the map
-  L.control.layers(baseMaps, overlayMaps, {
-    collapsed: false
-  }).addTo(map);
+  // // Create a layer control, pass in the baseMaps and overlayMaps. Add the layer control to the map
+  // L.control.layers(baseMaps, overlayMaps, {
+  //   collapsed: false
+  // }).addTo(map);
+
+  // Create a legend to display map information
+  // var info = L.control({
+  //   position: "bottomright"
+  // });
+  
+  // // Add the info legend to the map
+  // info.addTo(map);
+
 }
 
 // createMap();
-
-  // Create a legend to display map information
-
-  // Add the info legend to the map
-  // info.addTo(map);
-
 
 // Write function to create markers
 function createMarkers(response) {
 
   // Select the features property from response
   var features = response.features;
-  
-  console.log(features)
+  // console.log(features)
 
   // Initialise an array to hold the magnitude and depth markers
   var earthquakeMarkers = [];
 
   // Loop through the features array
   for (var index = 0; index < features.length; index++) {
-    var feature = features[index];  
-    var magnitude = feature.properties.mag;
-    var depth = feature.geometry.coordinates[2];
-    var place = feature.properties.place;
+    var feature = features[index];
+    var location = feature.geometry;
+    // var magnitude = feature.properties.mag;
+    // var depth = feature.geometry.coordinates[2];
+    // var place = feature.properties.place;
 
-    // For each earthquake, create a marker and bind a popup with additional information (e.g. "properties" > "place", "mag", "depth")
-    var earthquakeMarker = L.marker([magnitude, depth, place])
-    .bindPopup("<h3>" + place + "<h3><h3>Magnitude: " + magnitude + "</h3>");
+    // For each earthquake, create a marker and bind a popup with additional information
+    var earthquakeMarker = L.marker([location.coordinates[1],location.coordinates[0]])
+    .bindPopup("<h3>" + feature.properties.place + "<h3><h3>Magnitude: " + feature.properties.mag + "</h3>");
   
     // Add the marker to the earthquakeMarkers array
     earthquakeMarkers.push(earthquakeMarker);
   }
+
+// console.log(earthquakeMarkers)
+// console.log(location)
 
   // Create a layer group made from the earthquakeMarkers array, pass it into the createMap function
   createMap(L.layerGroup(earthquakeMarkers));
