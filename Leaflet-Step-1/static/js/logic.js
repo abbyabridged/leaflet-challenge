@@ -64,7 +64,7 @@ function createMarkers(response) {
     var earthquakeMarker = L.circle([location.coordinates[1],location.coordinates[0]],{
       radius:(feature.properties.mag)*15000,
       fillColor: getColor(location.coordinates[2]),
-      fillOpacity: 1,
+      fillOpacity: 0.6,
       color: "black",
       stroke: true,
       weight: 0.5
