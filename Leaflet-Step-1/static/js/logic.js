@@ -65,7 +65,7 @@ function createMarkers(response) {
     var earthquakeMarker = L.circle([location.coordinates[1],location.coordinates[0]],{
       radius:(feature.properties.mag)*15000,
       fillColor: getColor(location.coordinates[2]),
-      fillOpacity: 0.5,
+      fillOpacity: 1,
       color: "black",
       stroke: true,
       weight: 0.5
@@ -75,9 +75,9 @@ function createMarkers(response) {
     // Add the marker to the earthquakeMarkers array
     earthquakeMarkers.push(earthquakeMarker);
 
-    console.log(location)
-    console.log(feature.properties.place)   
-    console.log(location.coordinates[2]) 
+    // console.log(feature.properties.place)
+    // console.log(location)
+  
   }
 
 // console.log(earthquakeMarkers)
@@ -90,13 +90,28 @@ function createMarkers(response) {
 // Write function to determine the fill colour of circle marker, based on depth
 
 function getColor(depth){
-  if (depth > 10) {
-    return "red";
+  if (depth > 90) {
+    return "#FF3333";
+  }
+  else if (depth > 70) {
+    return "#FF6633";
+  }
+  else if (depth > 50) {
+    return "#FF9933";
+  }
+  else if (depth > 30) {
+    return "#FFCC33";
+  }
+  else if (depth > 10) {
+    return "#FFFF33";
+  }
+  else if ( depth > -10) {
+    return "#9CFF33";
   }
   else {
-    return "blue";
+    return "#000000";
   }
 }
 
 // Perform API call to retrieve USGS earthquake data. Call createMarkers when complete.
-d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson", createMarkers)
+d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson", createMarkers)
