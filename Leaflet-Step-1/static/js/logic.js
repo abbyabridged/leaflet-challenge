@@ -25,12 +25,6 @@ function createMap(earthquakes) {
     zoom: 4,
     layers: [lightmap, earthquakes]
   });
-
-  // // Create a layer control, pass in the baseMaps and overlayMaps. Add the layer control to the map
-  // L.control.layers(baseMaps, overlayMaps, {
-  //   collapsed: false
-  // });
-
       
   // Create a legend to display map information
   var legend = L.control({ position: 'bottomright'});
@@ -79,9 +73,6 @@ function createMarkers(response) {
   
     // Add the marker to the earthquakeMarkers array
     earthquakeMarkers.push(earthquakeMarker);
-
-    // console.log(feature.properties.place)
-    // console.log(location)
   }
 
   // Create a layer group made from the earthquakeMarkers array, pass it into the createMap function
