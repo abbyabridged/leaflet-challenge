@@ -60,22 +60,43 @@ function createMarkers(response) {
     // var magnitude = feature.properties.mag;
     // var depth = feature.geometry.coordinates[2];
     // var place = feature.properties.place;
-
+    
     // For each earthquake, create a marker and bind a popup with additional information
-    var earthquakeMarker = L.marker([location.coordinates[1],location.coordinates[0]])
-    .bindPopup("<h3>" + feature.properties.place + "<h3><h3>Magnitude: " + feature.properties.mag + "</h3>");
+    var earthquakeMarker = L.circle([location.coordinates[1],location.coordinates[0]],{
+      radius:(feature.properties.mag)*15000,
+      fillColor: getColor(location.coordinates[2]),
+      fillOpacity: 0.5,
+      color: "black",
+      stroke: true,
+      weight: 0.5
+    })
+    .bindPopup("<h3>" + feature.properties.place + "<h3><h3>Magnitude: " + feature.properties.mag + "</h3>" + "<h3>Depth: " + location.coordinates[2] + "</h3>");
   
     // Add the marker to the earthquakeMarkers array
     earthquakeMarkers.push(earthquakeMarker);
+
+    console.log(location)
+    console.log(feature.properties.place)   
+    console.log(location.coordinates[2]) 
   }
 
 // console.log(earthquakeMarkers)
-// console.log(location)
+
 
   // Create a layer group made from the earthquakeMarkers array, pass it into the createMap function
   createMap(L.layerGroup(earthquakeMarkers));
+};
+
+// Write function to determine the fill colour of circle marker, based on depth
+
+function getColor(depth){
+  if (depth > 10) {
+    return "red";
+  }
+  else {
+    return "blue";
+  }
 }
 
-
 // Perform API call to retrieve USGS earthquake data. Call createMarkers when complete.
-d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson", createMarkers);
+d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson", createMarkers)
