@@ -26,22 +26,30 @@ function createMap(earthquakes) {
     layers: [lightmap, earthquakes]
   });
 
-  // // Create a layer control, pass in the baseMaps and overlayMaps. Add the layer control to the map
-  // L.control.layers(baseMaps, overlayMaps, {
-  //   collapsed: false
-  // }).addTo(map);
+  // Create a layer control, pass in the baseMaps and overlayMaps. Add the layer control to the map
+  L.control.layers(baseMaps, overlayMaps, {
+    collapsed: false
+  });
 
+      
   // Create a legend to display map information
-  // var info = L.control({
-  //   position: "bottomright"
-  // });
-  
-  // // Add the info legend to the map
-  // info.addTo(map);
+  var legend = L.control({ position: 'bottomright'});
 
+  // When the layer control is added, insert a div with the class of "legend"
+  legend.onAdd = function() {
+      var div = L.DomUtil.create('div', 'info legend');
+      var ranges = [-10, 10, 30, 50, 70, 90];
+      
+      // Loop through each depth range and specify style and background colour based on getColor function
+      ranges.forEach((l, i) => {
+          div.innerHTML +=  '<i style="background-color:' + getColor(l+1) + '"></i> '
+          + l + (ranges[i + 1] ? '&ndash;' + ranges[i + 1] + '<br>' : '+');
+      });
+      return div;
+  };
+  // Add the info legend to the map
+  legend.addTo(map);
 }
-
-// createMap();
 
 // Write function to create markers
 function createMarkers(response) {
@@ -57,10 +65,7 @@ function createMarkers(response) {
   for (var index = 0; index < features.length; index++) {
     var feature = features[index];
     var location = feature.geometry;
-    // var magnitude = feature.properties.mag;
-    // var depth = feature.geometry.coordinates[2];
-    // var place = feature.properties.place;
-    
+        
     // For each earthquake, create a marker and bind a popup with additional information
     var earthquakeMarker = L.circle([location.coordinates[1],location.coordinates[0]],{
       radius:(feature.properties.mag)*15000,
@@ -77,11 +82,7 @@ function createMarkers(response) {
 
     // console.log(feature.properties.place)
     // console.log(location)
-  
   }
-
-// console.log(earthquakeMarkers)
-
 
   // Create a layer group made from the earthquakeMarkers array, pass it into the createMap function
   createMap(L.layerGroup(earthquakeMarkers));
@@ -115,3 +116,5 @@ function getColor(depth){
 
 // Perform API call to retrieve USGS earthquake data. Call createMarkers when complete.
 d3.json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_week.geojson", createMarkers)
+
+
